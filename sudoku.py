@@ -1,8 +1,32 @@
-import sys
+#Pablo Lopez 14509
+#Inteligencia Artificial 
 
-entrada = sys.argv[1]
+import sys
+from random import randint
+
 aceptados = [".","1","2","3","4"]
 error = False
+
+def actions(entrada):
+	b=0
+	for x in entrada:
+		if(x == "."): 
+			a = str(randint(1,4))
+			entrada = entrada[0:b] + a + entrada[b+1:]
+		b=b+1
+	return entrada
+
+def tablero(entrada):
+	print("El tablero del sudoku es: ")
+	print(" -*-*-*-*-*-*-*-*-")
+	print("| "+entrada[0]+" | "+entrada[1]+" || "+entrada[2]+" | "+entrada[3]+" |")
+	print(" ----------------")
+	print("| "+entrada[4]+" | "+entrada[5]+" || "+entrada[6]+" | "+entrada[7]+" |")
+	print(" -*-*-*-*-*-*-*-*-")
+	print("| "+entrada[8]+" | "+entrada[9]+" || "+entrada[10]+" | "+entrada[11]+" |")
+	print(" ----------------")
+	print("| "+entrada[12]+" | "+entrada[13]+" || "+entrada[14]+" | "+entrada[15]+" |")
+	print(" -*-*-*-*-*-*-*-*-")
 
 while(True):
 	if(len(sys.argv[1])==22):
@@ -14,16 +38,9 @@ while(True):
 					error = True
 					break
 			if(error != True):
-				print("El tablero del sudoku es: ")
-				print(" ----------------")
-				print("| "+inicial[0]+" | "+inicial[1]+" || "+inicial[2]+" | "+inicial[3]+" |")
-				print(" ----------------")
-				print("| "+inicial[4]+" | "+inicial[5]+" || "+inicial[6]+" | "+inicial[7]+" |")
-				print(" ----------------")
-				print("| "+inicial[8]+" | "+inicial[9]+" || "+inicial[10]+" | "+inicial[11]+" |")
-				print(" ----------------")
-				print("| "+inicial[12]+" | "+inicial[13]+" || "+inicial[14]+" | "+inicial[15]+" |")
-				print(" ----------------")
+				tablero(inicial)
+				inicial = actions(inicial)
+				tablero(inicial)
 				break
 			else:
 				print("Ingreso caracter invalido")
