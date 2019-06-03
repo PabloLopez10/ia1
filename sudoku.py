@@ -4,26 +4,49 @@
 from collections import OrderedDict
 import sys
 
-#variables globales
-
+#Instancia de variables
 Entrada = ""
-Entrada = sys.argv[1]
 inicial = ""
-L = list(Entrada)
-sudoku = [0 if x=="." else int(x)for x in Entrada]
-frontier = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
-values_present = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
-cleaner = []
-current_node = 0
-possible_values = [1,2,3,4]
-nodes = {}
+Entrada = sys.argv[1]
+fronteras = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
+v_actuales = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
+v_posibles = [1,2,3,4]
+nodos = {}
 actions = {}
 ordered_actions = {}
 action_keys = []
-visitados = {}
-full_counter = 0
+contador = 0
+col1 = []
+col2 = []
+col3 = []
+col4 = []
+fila1 = []
+fila2 = []
+fila3 = []
+fila4 = []
+nodo1 =  []
+nodo2 =  []
+nodo3 =  []
+nodo4 =  []
+nodo5 =  []
+nodo6 =  []
+nodo7 =  []
+nodo8 =  []
+nodo9 =  []
+nodo10 = []
+nodo11 = []
+nodo12 = []
+nodo13 = []
+nodo14 = []
+nodo15 = []
+nodo16 = []
+contador2 = 0
 
 
+#Ciclo para pasar la entrada a sudoku
+sudoku = [0 if x=="." else int(x)for x in Entrada]
+
+#Funcion para desplegar el sudoku
 def tablero(entrada):
     print(" -*-*-*-*-*-*-*-*-")
     print("| "+entrada[0]+" | "+entrada[1]+" || "+entrada[2]+" | "+entrada[3]+" |")
@@ -35,211 +58,145 @@ def tablero(entrada):
     print("| "+entrada[12]+" | "+entrada[13]+" || "+entrada[14]+" | "+entrada[15]+" |")
     print(" -*-*-*-*-*-*-*-*-")
 
-
-
-#rows
-row1 = []
-row2 = []
-row3 = []
-row4 = []
-def fill_rows():
-    global row1,row2,row3,row4,sudoku
-    row1 = sudoku[0:4]
-    row2 = sudoku[4:8]
-    row3 = sudoku[8:12]
-    row4 = sudoku[12:16]
-    
-#cols
-col1 = []
-col2 = []
-col3 = []
-col4 = []
-
-def fill_cols():
+#Funcion para llenar columnas
+def llenar_columnas():
     global col1,col2,col3,col4,sudoku
-    
     col1 = (sudoku[0:1]+ sudoku[4:5] + sudoku[8:9]+ sudoku[12:13])
     col2 = (sudoku[1:2]+ sudoku[5:6] + sudoku[9:10]+ sudoku[13:14])
     col3 = (sudoku[2:3]+ sudoku[6:7] + sudoku[10:11]+ sudoku[14:15])
     col4 = (sudoku[3:4]+ sudoku[7:8] + sudoku[11:12]+ sudoku[15:16])
+
+#Funcion para llenar filas 
+def llenar_filas():
+    global fila1,fila2,fila3,fila4,sudoku
+    fila1 = sudoku[0:4]
+    fila2 = sudoku[4:8]
+    fila3 = sudoku[8:12]
+    fila4 = sudoku[12:16]
         
 
-#nodos
+def crear_nodos():
+    global nodo1,nodo2,nodo3,nodo4,nodo5,nodo6,nodo7,nodo8,nodo9,nodo10,nodo11,nodo12,nodo13,nodo14,nodo15,nodo16,nodos
+    #Fila 1
+    nodo1.append(fila1 + col1[1:] + col2[1:2])
+    nodo2.append(fila1 + col2[1:] + col1[1:2])
+    nodo3.append(fila1 + col3[1:] + col4[1:2])
+    nodo4.append(fila1 + col4[1:] + col3[1:2])
+    #Fila 2
+    nodo5.append(fila2 + col1[0:1] + col1[2:] + fila1[1:2])
+    nodo6.append(fila2 + col2[0:1] + col2[2:] + fila1[0:1])
+    nodo7.append(fila2 + col3[0:1] + col3[2:] + col4[0:1])
+    nodo8.append(fila2 + col4[0:1] + col4[2:] + col3[0:1])
+    #Fila 3
+    nodo9.append(fila3 + col1[0:2] + col1[3:] + fila4[1:2])
+    nodo10.append(fila3 + col2[0:2] + col2[3:] + fila4[0:1])
+    nodo11.append(fila3 + col3[0:2] + col3[3:] + fila4[3:4])
+    nodo12.append(fila3 + col4[0:2] + col4[3:] + fila4[2:3])
+    #Fila 4
+    nodo13.append(fila4 + col1[:3] + fila3[1:2])
+    nodo14.append(fila4 + col2[:3] + fila3[0:1])
+    nodo15.append(fila4 + col3[:3] + fila3[3:4])
+    nodo16.append(fila4 + col4[:3] + fila3[2:3])
+    #Asignar cada nodo a la lista de nodos
+    nodos[0]  = nodo1
+    nodos[1]  = nodo2
+    nodos[2]  = nodo3
+    nodos[3]  = nodo4
+    nodos[4]  = nodo5
+    nodos[5]  = nodo6
+    nodos[6]  = nodo7
+    nodos[7]  = nodo8
+    nodos[8]  = nodo9
+    nodos[9]  = nodo10
+    nodos[10] = nodo11
+    nodos[11] = nodo12
+    nodos[12] = nodo13
+    nodos[13] = nodo14
+    nodos[14] = nodo15
+    nodos[15] = nodo16
 
-node1 =  []
-node2 =  []
-node3 =  []
-node4 =  []
-node5 =  []
-node6 =  []
-node7 =  []
-node8 =  []
-node9 =  []
-node10 = []
-node11 = []
-node12 = []
-node13 = []
-node14 = []
-node15 = []
-node16 = []
-
-def create_update_nodes():
-    global node1,node2,node3,node4,node5,node6,node7,node8,node9,node10,node11,node12,node13,node14,node15,node16,nodes
-    
-    node1.append(row1 + col1[1:] + col2[1:2])
-    node2.append(row1 + col2[1:] + col1[1:2])
-    node3.append(row1 + col3[1:] + col4[1:2])
-    node4.append(row1 + col4[1:] + col3[1:2])
-
-    #el skip no se ve muy bien pero se ordena de la manera mas facil de asegurarse que estan todos los numeros
-    node5.append(row2 + col1[0:1] + col1[2:] + row1[1:2])
-    node6.append(row2 + col2[0:1] + col2[2:] + row1[0:1])
-    node7.append(row2 + col3[0:1] + col3[2:] + col4[0:1])
-    node8.append(row2 + col4[0:1] + col4[2:] + col3[0:1])
-
-    #3er fila
-    node9.append( row3 + col1[0:2] + col1[3:] + row4[1:2])
-    node10.append(row3 + col2[0:2] + col2[3:] + row4[0:1])
-    node11.append(row3 + col3[0:2] + col3[3:] + row4[3:4])
-    node12.append(row3 + col4[0:2] + col4[3:] + row4[2:3])
-
-    #4a fila
-    #ya no hay skip como la primera fila
-    node13.append(row4 + col1[:3] + row3[1:2])
-    node14.append(row4 + col2[:3] + row3[0:1])
-    node15.append(row4 + col3[:3] + row3[3:4])
-    node16.append(row4 + col4[:3] + row3[2:3])
-
-    nodes[0]  = node1
-    nodes[1]  = node2
-    nodes[2]  = node3
-    nodes[3]  = node4
-    nodes[4]  = node5
-    nodes[5]  = node6
-    nodes[6]  = node7
-    nodes[7]  = node8
-    nodes[8]  = node9
-    nodes[9]  = node10
-    nodes[10] = node11
-    nodes[11] = node12
-    nodes[12] = node13
-    nodes[13] = node14
-    nodes[14] = node15
-    nodes[15] = node16
-
-
-#frontera
-def fill_frontier():
-    global frontier, nodes, values_present
+#Funcion para llenar las fronteras
+def llenar_fronteras():
+    global fronteras, nodos, v_actuales
     for i in range(16):    
-        for value in nodes[i]:
-            if value not in values_present[i] and value != 0:
-                values_present[i].append(value)
-                frontier[i].append(list(set(possible_values)-set(values_present[i][0])))
+        for valor in nodos[i]:
+            if valor not in v_actuales[i] and valor != 0:
+                v_actuales[i].append(valor)
+                fronteras[i].append(list(set(v_posibles)-set(v_actuales[i][0])))
 
-#print(frontier)
-def fill_actions():
-    global sudoku,actions,frontier
+#Funcion para llenar actions
+def llenar_actions():
+    global sudoku,actions,fronteras
     for i in range(16):
         if(sudoku[i]==0):
-            actions[i] = frontier[i][0]
+            actions[i] = fronteras[i][0]
 
-#ordenar de menor a mayor las acciones
-def actionkeys():
+#Funcion para ordenar actions
+def ordenar_actionkeys():
     global action_keys,ordered_actions
     ordered_actions = OrderedDict(sorted(actions.items(), key = lambda item: len(item[1]),reverse = False))
     action_keys = list(ordered_actions.keys())
 
-
-#print(action_keys)
-#print(ordered_actions)
-#eliminar opciones con 1 posibilidad
-#resolver sudoku
-def solve():
+#Funcion para resolver el sudoku
+def resolver():
     global action_keys,ordered_actions,sudoku
     for i in range(len(action_keys)):
         if(len(ordered_actions[action_keys[i]]) ==1):
             sudoku[action_keys[i]] = ordered_actions[action_keys[i]].pop()
-        #elif(len(ordered_actions[action_keys[i]])>1):
-         #   sudoku[action_keys[i]] = ordered_actions[action_keys[i]][randint(0,len(ordered_actions[action_keys[i]])-1)]
 
-
-while(0 in sudoku and full_counter<16):
-    #llenar filas columnas y nodos
-    fill_rows()
-    fill_cols()
-    create_update_nodes()
-    #frontier
-    fill_frontier()
-    #actions
-    fill_actions()
-    #keys
-    actionkeys()
-    solve()
-    #print(sudoku)
+#Ciclo para iterar y encontrar la solucion
+while(0 in sudoku and contador<16):
+    #llenar filas, columnas, nodos, fronteras y actions
+    llenar_columnas()
+    llenar_filas()
+    crear_nodos()
+    llenar_fronteras()
+    llenar_actions()
+    ordenar_actionkeys()
+    #Resolver
+    resolver()
     inicial = ''.join(str(e) for e in sudoku)
-    #print("| "+sudoku[0]+" | ")
-    #print("| "+inicial[0]+" | ")
-    #tablero(inicial)
-    #terminan las acciones de llenado
-    #vaciar
-    #vaciar diccionario nodos
-    nodes.clear()
-    #vaciar nodos
-    node1.clear()
-    node2.clear()
-    node3.clear()
-    node4.clear()
-    node5.clear()
-    node6.clear()
-    node7.clear()
-    node8.clear()
-    node9.clear()
-    node10.clear()
-    node11.clear()
-    node12.clear()
-    node13.clear()
-    node14.clear()
-    node15.clear()
-    node16.clear()
-
-    #vaciar frontera y acciones y values_present
-    values_present.clear()
-    frontier.clear()
+    #Limpiar variables para siguiente iteracion
+    nodos.clear()
+    nodo1.clear()
+    nodo2.clear()
+    nodo3.clear()
+    nodo4.clear()
+    nodo5.clear()
+    nodo6.clear()
+    nodo7.clear()
+    nodo8.clear()
+    nodo9.clear()
+    nodo10.clear()
+    nodo11.clear()
+    nodo12.clear()
+    nodo13.clear()
+    nodo14.clear()
+    nodo15.clear()
+    nodo16.clear()
+    v_actuales.clear()
+    fronteras.clear()
     actions.clear()
     for i in range(16):
-        frontier.append([])
-        values_present.append([])
+        fronteras.append([])
+        v_actuales.append([])
 
     #vaciar action_keys y ordered actions
     action_keys.clear()
     ordered_actions.clear()
-    full_counter += 1
-tablero(inicial)
-#fin del while
-contador = 0
-if(0 in sudoku):
-    print("no es posible resolver este sudoku")
-for i in range(16):
-    if Entrada[i] == ".":
-        contador = contador + 1
-if contador == 0:
+    contador += 1
+#Verificar un sudoky lleno
+if('.' not in Entrada):
     print("Ingreso un sudoku lleno")
+else:
+    #Condicion si el sudoku tiene o no tiene solucion 
+    if(0 in sudoku):
+        print("El sudoku ingresado no se puede resolver")
+        tablero(inicial)
+    else:
+        print("La Solucion es:")
+        tablero(inicial)
 
-#llenar filas columnas y nodos
-#fill_rows()
-#fill_cols()
-#create_update_nodes()
 
-#frontier
-#fill_frontier()
-#print(frontier)
-#actions
-#fill_actions()
-#keys
-#actionkeys()
-#print(action_keys)
-#print(ordered_actions)
-#solve()
-#print(sudoku)
+
 
